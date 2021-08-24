@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Art Gallery</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/templatemo-style.css">
+    <!--
+
+    TemplateMo 556 Catalog-Z
+
+    https://templatemo.com/tm-556-catalog-z
+
+    -->
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">
+            <i class="fas fa-images mr-2"></i>
+            My Nft Art Gallery
+        </a>
+    </div>
+</nav>
+
+<div class="tm-hero d-flex justify-content-center align-items-center banner">
+    <h1 class="tm-text-primary">Nft Art Gallery</h1>
+</div>
+
+<div class="container-fluid tm-container-content tm-mt-60" id="template-image">
+    <div class="row mb-4">
+        <h2 class="col-12 tm-text-primary">{{ image.title }}</h2>
+    </div>
+    <div class="row tm-mb-90">
+        <div class="col-xl-8 col-lg-7 col-md-6 col-sm-12">
+            <img src="{{ image.sketch.path }}" alt="Image" class="img-fluid">
+        </div>
+        <div class="col-xl-4 col-lg-5 col-md-6 col-sm-12">
+            <div class="tm-bg-gray tm-video-details">
+                <div class="text-center mb-5">
+                    <a href="{{ image.sketch.path }}" download class="btn btn-primary tm-btn-big">Download</a>
+                </div>
+                <div class="mb-3 d-flex flex-wrap">
+                    <div class="mr-4 mb-2">
+                        <span class="tm-text-gray-dark">Dimension: </span><span class="tm-text-primary">{{ image.dimension.w }}x{{ image.dimension.h }}</span>
+                    </div>
+                    <div class="mr-4 mb-2">
+                        <span class="tm-text-gray-dark">Format: </span><span class="tm-text-primary">{{ image.sketch.format }}</span>
+                    </div>
+                </div>
+                <p class="mb-0">IPFS Url</p>
+                <div class="mb-3 d-flex align-items-center">
+                    <form class="d-flex copy-text-form">
+                        <input class="form-control" type="text" value="{{ image.nft.ipfs.image }}" placeholder="IPFS URL">
+                        <button class="btn btn-outline-success" type="button"><i class="fas fa-copy"></i></button>
+                    </form>
+                </div>
+
+                <div class="mb-3">
+                    <h6>IPFS Metadata Url</h6>
+                    <p style="word-wrap: anywhere">{{ image.nft.ipfs.metadata }}</p>
+                    <h6>IPFS Image Url</h6>
+                    <p style="word-wrap: anywhere">{{ image.nft.ipfs.image }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/plugins.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.0.1/nunjucks.min.js" integrity="sha512-IIuR+Zp8wvP0dxNcSsRPoL7SXzP1kGmosDtcU7f6cPObZ9F5Ze/icFSRH/SqigP468jGwDm2XOE0/gSGm/cTBw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    $(window).on("load", function() {
+        $('body').addClass('loaded');
+    });
+</script>
+
+<script>
+    function getParameterByName(name, url = window.location.href) {
+        name = name.replace(/[\[\]]/g, '\\$&');
+        var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, ' '));
+    }
+
+    function copyText(copyText) {
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+
+        navigator.clipboard.writeText(copyText.value);
+
+        $(copyText).tooltip({title: "Url copied", trigger: "manual"}).tooltip('show')
+        setTimeout(() => {
+            $(copyText).tooltip('hide')
+        }, 1500)
+    }
+</script>
+
+<script>
+    function setListeners() {
+        $(".copy-text-form button").on('click', function (e) {
+            e.preventDefault()
+
+            const input = $(this).closest('form').find('input[type=text]')
+            copyText(input[0])
+        })
+    }
+</script>
+
+<script>
+    const id = getParameterByName("id")
+    if (!id) {
+        location.href = "index.html"
+    } else {
+        $.get('./arts.json', {id: id}, function (data) {
+            data.title = "Art-" + id;
+            const str = document.getElementById("template-image").innerHTML;
+            document.getElementById("template-image").innerHTML = nunjucks.renderString(str, {image: data})
+            setListeners()
+        }, 'json')
+    }
+</script>
+</body>
+</html>

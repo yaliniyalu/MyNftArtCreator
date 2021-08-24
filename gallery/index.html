@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NFT Gallery</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="css/templatemo-style.css">
+    <!--
+
+    TemplateMo 556 Catalog-Z
+
+    https://templatemo.com/tm-556-catalog-z
+
+    -->
+</head>
+<body>
+<nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-images mr-2"></i>
+            My Nft Art Gallery
+        </a>
+    </div>
+</nav>
+
+<div class="tm-hero d-flex justify-content-center align-items-center banner">
+    <h1 class="tm-text-primary">Nft Art Gallery</h1>
+</div>
+
+<div class="container-fluid tm-container-content tm-mt-60">
+    <div class="row mb-4">
+        <h2 class="col-6 tm-text-primary">
+            Art Gallery <span id="gallery-count"></span>
+        </h2>
+    </div>
+    <div class="row tm-mb-90 tm-gallery" id="gallery">
+        <p>Loading...</p>
+    </div> <!-- row -->
+</div> <!-- container-fluid, tm-container-content -->
+
+<script src="js/plugins.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/nunjucks/3.0.1/nunjucks.min.js" integrity="sha512-IIuR+Zp8wvP0dxNcSsRPoL7SXzP1kGmosDtcU7f6cPObZ9F5Ze/icFSRH/SqigP468jGwDm2XOE0/gSGm/cTBw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    /*$(window).on("load", function() {
+        $('body').addClass('loaded');
+    });*/
+</script>
+
+<script type="text/html" id="template-list">
+    {% for item in items %}
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12 mb-5">
+        <figure class="effect-ming tm-video-item">
+            <img src="{{ item.sketch.thumbPath }}" alt="Image" class="img-fluid">
+            <figcaption class="d-flex align-items-center justify-content-center">
+                <h2>Art-{{ item.id }}</h2>
+                <a href="photo-detail.html?id={{ item.id }}">View more</a>
+            </figcaption>
+        </figure>
+    </div>
+    {% else %}
+    <p>No Art Found</p>
+    {% endfor %}
+</script>
+
+<script>
+    $.get('./arts.json', {}, function (data) {
+        const str = document.getElementById("template-list").innerHTML;
+        document.getElementById("gallery").innerHTML = nunjucks.renderString(str, {items: data})
+        document.getElementById("gallery-count").innerHTML = `(${data.length})`
+    }, 'json')
+</script>
+</body>
+</html>
